@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dipraj Dey Tilok | Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green: #00ff88;
+    --cyan: #00eeff;
+    --purple: #b86fff;
+    --pink: #ff5fa0;
+    --yellow: #ffe94d;
+    --dark: #050a0f;
+    --dark2: #0a1520;
+    --dark3: #0d1f30;
+    --panel: rgba(0,255,136,0.05);
+    --border: rgba(0,255,136,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ── SCANLINES OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── GRID BG ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(5,10,15,0.92);
+    border-bottom: 2px solid var(--border);
+    backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 56px;
+  }
+  .nav-logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green);
+    letter-spacing: 2px;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: rgba(0,255,136,0.6);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.2s, text-shadow 0.2s;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-links a:hover {
+    color: var(--green);
+    text-shadow: 0 0 8px var(--green);
+    border-bottom-color: var(--green);
+  }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 80px 2rem 2rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  /* floating particles */
+  .particles { position: absolute; inset: 0; pointer-events: none; }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) translateX(60px); opacity: 0; }
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 140px; height: 140px;
+    margin-bottom: 2rem;
+    animation: fadeDown 0.8s ease both;
+  }
+  .avatar-frame {
+    width: 140px; height: 140px;
+    border: 3px solid var(--green);
+    box-shadow: 0 0 20px var(--green), 0 0 60px rgba(0,255,136,0.2), inset 0 0 20px rgba(0,255,136,0.05);
+    overflow: hidden;
+    image-rendering: pixelated;
+    position: relative;
+  }
+  .avatar-frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    filter: contrast(1.1) saturate(0.9);
+  }
+  .avatar-corner {
+    position: absolute;
+    width: 12px; height: 12px;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+  .avatar-corner.tl { top: -3px; left: -3px; }
+  .avatar-corner.tr { top: -3px; right: -3px; }
+  .avatar-corner.bl { bottom: -3px; left: -3px; }
+  .avatar-corner.br { bottom: -3px; right: -3px; }
+  .avatar-ping {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    width: 14px; height: 14px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--green);
+    animation: ping 1.5s infinite;
+  }
+  @keyframes ping {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+  }
+
+  .hero-tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--cyan);
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px var(--cyan);
+    animation: fadeDown 0.8s 0.1s ease both;
+  }
+
+  .hero-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(1rem, 3vw, 1.6rem);
+    color: #fff;
+    text-shadow: 0 0 20px var(--green), 3px 3px 0 var(--dark3);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .hero-title {
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: var(--green);
+    letter-spacing: 3px;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.8s 0.3s ease both;
+  }
+
+  .hero-bio {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem;
+    color: rgba(0,255,136,0.7);
+    max-width: 520px;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    animation: fadeDown 0.8s 0.4s ease both;
+  }
+
+  .hero-bio .cursor {
+    display: inline-block;
+    width: 10px; height: 1.1em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    animation: blink 0.8s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    animation: fadeDown 0.8s 0.5s ease both;
+  }
+  .btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    padding: 12px 20px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn:hover::before { opacity: 0.1; }
+  .btn-primary {
+    color: var(--dark);
+    background: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 20px rgba(0,255,136,0.5), 4px 4px 0 rgba(0,255,136,0.3);
+  }
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(0,255,136,0.8), 4px 4px 0 rgba(0,255,136,0.5); transform: translate(-2px,-2px); }
+  .btn-outline {
+    color: var(--cyan);
+    background: transparent;
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0,238,255,0.2), 4px 4px 0 rgba(0,238,255,0.1);
+  }
+  .btn-outline:hover { box-shadow: 0 0 20px rgba(0,238,255,0.5), 4px 4px 0 rgba(0,238,255,0.3); transform: translate(-2px,-2px); }
+
+  /* scroll indicator */
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: rgba(0,255,136,0.4);
+    letter-spacing: 2px;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative; z-index: 1;
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .section-number {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--purple);
+    text-shadow: 0 0 10px var(--purple);
+    opacity: 0.6;
+  }
+  .section-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(0.7rem, 2vw, 1rem);
+    color: #fff;
+    text-shadow: 2px 2px 0 var(--dark3);
+    letter-spacing: 2px;
+  }
+  .section-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s;
+    overflow: hidden;
+    cursor: default;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .skill-card:hover { border-color: rgba(0,255,136,0.5); box-shadow: 0 0 30px rgba(0,255,136,0.1); transform: translateY(-4px); }
+  .skill-card:hover::before { transform: scaleX(1); }
+  .skill-icon {
+    font-size: 2rem; margin-bottom: 1rem;
+    display: block;
+    filter: drop-shadow(0 0 8px var(--green));
+  }
+  .skill-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+    letter-spacing: 1px;
+  }
+  .skill-desc {
+    font-size: 0.85rem;
+    color: rgba(0,255,136,0.6);
+    line-height: 1.7;
+  }
+  .skill-bar-wrap {
+    margin-top: 1rem;
+    background: rgba(0,255,136,0.1);
+    height: 4px;
+    border: 1px solid var(--border);
+  }
+  .skill-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    box-shadow: 0 0 8px var(--green);
+    animation: growBar 1.5s ease both;
+  }
+  @keyframes growBar { from { width: 0 !important; } }
+
+  /* ── PROJECTS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,136,0.03), transparent);
+    pointer-events: none;
+  }
+  .project-card:hover { border-color: rgba(0,238,255,0.5); box-shadow: 0 0 30px rgba(0,238,255,0.1); transform: translateY(-4px); }
+  .project-id {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: var(--purple);
+    letter-spacing: 2px;
+    margin-bottom: 0.75rem;
+    opacity: 0.7;
+  }
+  .project-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    letter-spacing: 1px;
+  }
+  .project-desc {
+    font-size: 0.85rem;
+    color: rgba(0,255,136,0.6);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.35rem;
+    padding: 4px 8px;
+    border: 1px solid;
+    letter-spacing: 1px;
+  }
+  .tag-green { color: var(--green); border-color: rgba(0,255,136,0.3); }
+  .tag-cyan { color: var(--cyan); border-color: rgba(0,238,255,0.3); }
+  .tag-purple { color: var(--purple); border-color: rgba(184,111,255,0.3); }
+  .tag-pink { color: var(--pink); border-color: rgba(255,95,160,0.3); }
+  .tag-yellow { color: var(--yellow); border-color: rgba(255,233,77,0.3); }
+
+  .project-link {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: var(--green);
+    text-decoration: none;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--green);
+    padding-bottom: 2px;
+    transition: all 0.2s;
+  }
+  .project-link:hover { color: var(--cyan); border-color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-text p {
+    font-size: 0.95rem;
+    color: rgba(0,255,136,0.7);
+    line-height: 1.9;
+    margin-bottom: 1rem;
+  }
+  .about-text p span { color: var(--green); }
+  .about-stats { display: flex; flex-direction: column; gap: 1rem; }
+  .stat-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: all 0.3s;
+  }
+  .stat-box:hover { border-color: rgba(0,255,136,0.5); transform: translateX(8px); }
+  .stat-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.2rem;
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green);
+    min-width: 60px;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: rgba(0,255,136,0.5);
+    line-height: 1.5;
+  }
+
+  /* ── TERMINAL CONTACT ── */
+  .terminal {
+    background: #020d0a;
+    border: 1px solid var(--border);
+    max-width: 700px;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0,255,136,0.1);
+  }
+  .terminal-bar {
+    background: rgba(0,255,136,0.08);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-red { background: #ff5f5f; box-shadow: 0 0 6px #ff5f5f; }
+  .dot-yellow { background: #ffe94d; box-shadow: 0 0 6px #ffe94d; }
+  .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .terminal-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: rgba(0,255,136,0.4);
+    margin-left: 8px;
+    letter-spacing: 2px;
+  }
+  .terminal-body { padding: 2rem; }
+  .terminal-line {
+    font-size: 0.9rem;
+    line-height: 2.2;
+    color: rgba(0,255,136,0.8);
+  }
+  .terminal-line .prompt { color: var(--purple); }
+  .terminal-line .cmd { color: var(--cyan); }
+  .terminal-line .val { color: var(--green); }
+  .terminal-line a {
+    color: var(--green);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,255,136,0.3);
+    transition: all 0.2s;
+  }
+  .terminal-line a:hover { color: var(--cyan); border-color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: rgba(0,255,136,0.3);
+    letter-spacing: 2px;
+    line-height: 2.5;
+  }
+  footer span { color: var(--pink); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── GLITCH on hover for name ── */
+  .hero-name:hover {
+    animation: glitch 0.4s steps(2) infinite;
+  }
+  @keyframes glitch {
+    0%   { text-shadow: 2px 0 var(--pink), -2px 0 var(--cyan), 0 0 20px var(--green); }
+    25%  { text-shadow: -2px 0 var(--pink), 2px 0 var(--cyan), 0 0 20px var(--green); }
+    50%  { text-shadow: 2px 2px var(--purple), -2px -2px var(--yellow), 0 0 20px var(--green); }
+    75%  { text-shadow: 0 2px var(--cyan), 0 -2px var(--pink), 0 0 20px var(--green); }
+    100% { text-shadow: 0 0 20px var(--green), 3px 3px 0 var(--dark3); }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links { gap: 0.8rem; }
+    .nav-links a { font-size: 0.38rem; }
+    section { padding: 4rem 1rem; }
+  }
+
+  /* ── PIXEL CORNERS ── */
+  .pixel-box {
+    position: relative;
+  }
+  .pixel-box::before, .pixel-box::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+  .pixel-box::before { top: -1px; left: -1px; }
+  .pixel-box::after { bottom: -1px; right: -1px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.3); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(5,10,15,0.95);
+    border-top: 1px solid var(--border);
+    padding: 4px 1rem;
+    display: flex; align-items: center; gap: 2rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.38rem;
+    color: rgba(0,255,136,0.4);
+    letter-spacing: 1px;
+  }
+  .status-item { display: flex; align-items: center; gap: 6px; }
+  .status-dot { width: 6px; height: 6px; background: var(--green); box-shadow: 0 0 6px var(--green); animation: ping 1.5s infinite; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">DDT.DEV</a>
+  <ul class="nav-links">
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#projects">PROJECTS</a></li>
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="avatar-wrap">
+    <div class="avatar-frame">
+      <img src="https://avatars.githubusercontent.com/u/180982174?v=4" alt="Dipraj Dey Tilok"/>
+      <div class="avatar-corner tl"></div>
+      <div class="avatar-corner tr"></div>
+      <div class="avatar-corner bl"></div>
+      <div class="avatar-corner br"></div>
+    </div>
+    <div class="avatar-ping"></div>
+  </div>
+
+  <div class="hero-tag">▶ PLAYER_01 INITIALIZED</div>
+  <h1 class="hero-name">DIPRAJ DEY TILOK</h1>
+  <div class="hero-title">[ BEGINNER DEVELOPER ]</div>
+  <p class="hero-bio">
+    Tech-savvy &amp; fast learner. Building Discord bots, server tools,<br/>
+    checker &amp; dumping utilities. Currently studying @ Sylhet Govt College.<br/>
+    Interested in ethical hacking &amp; the JS ecosystem.<span class="cursor"></span>
+  </p>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="#projects">▶ VIEW PROJECTS</a>
+    <a class="btn btn-outline" href="https://github.com/Dipraj-1" target="_blank">◈ GITHUB</a>
+  </div>
+
+  <div class="scroll-hint">▼ SCROLL DOWN ▼</div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header fade-in">
+    <span class="section-number">01</span>
+    <h2 class="section-title">TECH STACK</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card fade-in">
+      <span class="skill-icon">🤖</span>
+      <div class="skill-name">DISCORD BOTS</div>
+      <p class="skill-desc">Building feature-rich Discord bots — commands, events, moderation, automation and custom integrations.</p>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:80%"></div></div>
+    </div>
+    <div class="skill-card fade-in">
+      <span class="skill-icon">🛡️</span>
+      <div class="skill-name">SERVER SETUP</div>
+      <p class="skill-desc">Designing and configuring Discord servers with roles, channels, permissions, bots and complete community structures.</p>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:85%"></div></div>
+    </div>
+    <div class="skill-card fade-in">
+      <span class="skill-icon">🔍</span>
+      <div class="skill-name">CHECKER TOOLS</div>
+      <p class="skill-desc">Developing account and credential checker tools with proxy support, multi-threading and hit logging.</p>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:70%"></div></div>
+    </div>
+    <div class="skill-card fade-in">
+      <span class="skill-icon">💾</span>
+      <div class="skill-name">DUMPING TOOLS</div>
+      <p class="skill-desc">Creating data dumping utilities for extraction, parsing and organized output of large datasets.</p>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:65%"></div></div>
+    </div>
+    <div class="skill-card fade-in">
+      <span class="skill-icon">🐍</span>
+      <div class="skill-name">PYTHON</div>
+      <p class="skill-desc">Primary language for bots, automation scripts, tool development and rapid prototyping of ideas.</p>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:72%"></div></div>
+    </div>
+    <div class="skill-card fade-in">
+      <span class="skill-icon">⚡</span>
+      <div class="skill-name">FAST LEARNER</div>
+      <p class="skill-desc">Picking up new technologies at speed — from termux hacking to TypeScript plugins. No tool is off limits.</p>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:99%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header fade-in">
+    <span class="section-number">02</span>
+    <h2 class="section-title">PROJECTS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card fade-in">
+      <div class="project-id">PROJECT_001</div>
+      <div class="project-name">HYPESQUAD BADGE SWITCHER</div>
+      <p class="project-desc">A Vencord plugin to easily switch between Discord HypeSquad houses or remove your badge entirely — fully client-side, no account risk.</p>
+      <div class="project-tags">
+        <span class="tag tag-cyan">TypeScript</span>
+        <span class="tag tag-purple">Vencord</span>
+        <span class="tag tag-green">Discord</span>
+        <span class="tag tag-pink">Plugin</span>
+      </div>
+      <a class="project-link" href="https://github.com/Dipraj-1/HypesquadBadgeSwitcher" target="_blank">▶ VIEW ON GITHUB</a>
+    </div>
+    <div class="project-card fade-in">
+      <div class="project-id">PROJECT_002</div>
+      <div class="project-name">DISCORD BOT SUITE</div>
+      <p class="project-desc">Custom Discord bots with moderation, utility, and automation features. Built to handle real servers with real user needs.</p>
+      <div class="project-tags">
+        <span class="tag tag-yellow">Python</span>
+        <span class="tag tag-green">discord.py</span>
+        <span class="tag tag-cyan">Bot</span>
+        <span class="tag tag-purple">Automation</span>
+      </div>
+      <a class="project-link" href="https://github.com/Dipraj-1" target="_blank">▶ VIEW GITHUB</a>
+    </div>
+    <div class="project-card fade-in">
+      <div class="project-id">PROJECT_003</div>
+      <div class="project-name">CHECKER & DUMPING TOOLS</div>
+      <p class="project-desc">Specialized tools for checking credentials and dumping structured data. Built with speed and reliability in mind using Python.</p>
+      <div class="project-tags">
+        <span class="tag tag-yellow">Python</span>
+        <span class="tag tag-pink">CLI Tool</span>
+        <span class="tag tag-green">Async</span>
+        <span class="tag tag-cyan">Proxy Support</span>
+      </div>
+      <a class="project-link" href="https://github.com/Dipraj-1" target="_blank">▶ VIEW GITHUB</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header fade-in">
+    <span class="section-number">03</span>
+    <h2 class="section-title">ABOUT ME</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <p>Hey! I'm <span>Dipraj Dey Tilok</span>, a beginner developer from Bangladesh currently studying at <span>Sylhet Government College</span>.</p>
+      <p>I'm deeply passionate about tech — from building <span>Discord bots & servers</span> to writing <span>checker and dumping tools</span>. I'm also interested in <span>ethical hacking</span> and currently learning Termux.</p>
+      <p>I consider myself a <span>fast learner</span> who picks up new skills quickly. When I'm not coding, I'm exploring new tools, experimenting on Discord communities, or studying new programming concepts.</p>
+      <p>Open to <span>collaborations</span> — if you have a project idea, let's build it!</p>
+    </div>
+    <div class="about-stats fade-in">
+      <div class="stat-box pixel-box">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">GitHub Repos<br/>Published</div>
+      </div>
+      <div class="stat-box pixel-box">
+        <div class="stat-num">4</div>
+        <div class="stat-label">GitHub<br/>Achievements Earned</div>
+      </div>
+      <div class="stat-box pixel-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Fast Learner<br/>Mindset</div>
+      </div>
+      <div class="stat-box pixel-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Curiosity for<br/>New Technologies</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header fade-in">
+    <span class="section-number">04</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="terminal fade-in">
+    <div class="terminal-bar">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <span class="terminal-title">dipraj@portfolio ~ contact.sh</span>
+    </div>
+    <div class="terminal-body">
+      <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">cat</span> contact.json</div>
+      <div class="terminal-line">{</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="prompt">"github"</span>: <span class="val">"<a href="https://github.com/Dipraj-1" target="_blank">github.com/Dipraj-1</a>"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="prompt">"discord"</span>: <span class="val">"<a href="https://discord.com/users/1407738161471422495" target="_blank">discord.com/users/1407738161471422495</a>"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="prompt">"facebook"</span>: <span class="val">"<a href="https://www.facebook.com/share/17XFEnJiw3/" target="_blank">facebook.com/diprajdeytilok</a>"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="prompt">"location"</span>: <span class="val">"Sylhet, Bangladesh 🇧🇩"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="prompt">"status"</span>: <span class="val">"✅ Open to Collaborate"</span></div>
+      <div class="terminal-line">}</div>
+      <br/>
+      <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">echo</span> <span class="val">"Let's build something together!"</span><span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>DIPRAJ DEY TILOK &nbsp;|&nbsp; BEGINNER DEVELOPER</div>
+  <div>CODED WITH <span>♥</span> &nbsp;|&nbsp; SYLHET, BANGLADESH 🇧🇩</div>
+  <div style="opacity:0.4">© 2025 DDT.DEV — ALL SYSTEMS ONLINE</div>
+</footer>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-item"><div class="status-dot"></div>ONLINE</div>
+  <div class="status-item">LOCATION: BD</div>
+  <div class="status-item">STATUS: OPEN TO COLLAB</div>
+  <div class="status-item" id="clock"></div>
+</div>
+
+<script>
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (6 + Math.random() * 12) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    const colors = ['#00ff88','#00eeff','#b86fff','#ff5fa0'];
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.boxShadow = `0 0 6px ${p.style.background}`;
+    if (Math.random() > 0.7) { p.style.width = '5px'; p.style.height = '5px'; }
+    container.appendChild(p);
+  }
+
+  // Scroll fade-in
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  fadeEls.forEach(el => obs.observe(el));
+
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('en-US', { hour12: false });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Nav active highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${current}`
+        ? 'var(--green)' : '';
+    });
+  });
+</script>
+</body>
+</html>
