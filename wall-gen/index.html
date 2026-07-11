@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WALL-GEN — Generative Wallpapers</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><text x='16' y='21' text-anchor='middle' font-family='-apple-system,Helvetica,Arial,sans-serif' font-size='13' font-weight='600' fill='white'>WPR</text></svg>">
+  <link rel="stylesheet" href="styles.css?v=2.4">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('wallgen-theme') || 'dark';
+      const r = document.documentElement.style;
+      if (saved === 'light') {
+        r.setProperty('--bg', '#f5f4fa');
+        r.setProperty('--bg-card', 'rgba(255, 255, 255, 0.45)');
+        r.setProperty('--bg-hover', 'rgba(240, 240, 250, 0.7)');
+        r.setProperty('--bg-nav', 'rgba(245, 244, 250, 0.4)');
+        r.setProperty('--text', '#1a1824');
+        r.setProperty('--text-muted', '#6b667a');
+        r.setProperty('--border', 'rgba(0, 0, 0, 0.08)');
+        r.setProperty('--accent', '#5e45a0');
+        r.setProperty('--on-accent', '#ffffff');
+      } else {
+        r.setProperty('--bg', '#07080c');
+        r.setProperty('--bg-card', 'rgba(25, 26, 35, 0.45)');
+        r.setProperty('--bg-hover', 'rgba(45, 46, 65, 0.65)');
+        r.setProperty('--bg-nav', 'rgba(12, 13, 20, 0.4)');
+        r.setProperty('--text', '#f3effa');
+        r.setProperty('--text-muted', '#a69eb5');
+        r.setProperty('--border', 'rgba(255, 255, 255, 0.08)');
+        r.setProperty('--accent', '#d2c1ff');
+        r.setProperty('--on-accent', '#07080c');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<nav data-tauri-drag-region>
+  <a href="index.html" class="nav-logo">
+    <img src="../assets/Gemini_Generated_Image_b0kf5mb0kf5mb0kf.png" alt="wall-gen logo" class="nav-logo-mark">
+    <div class="nav-logo-text">wall-gen</div>
+  </a>
+
+  <div class="nav-actions">
+    <div class="theme-tabs">
+      <button class="theme-tab active" id="themeDark" title="Dark" style="border: none; cursor: pointer;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M7 1a6 6 0 1 0 0 12A4.5 4.5 0 0 1 7 1z"/>
+        </svg>
+      </button>
+      <button class="theme-tab" id="themeLight" title="Light" style="border: none; cursor: pointer;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="7" cy="7" r="3"/>
+          <path d="M7 1v1.5M7 12.5V14M1 7h1.5M12.5 7H14M2.8 2.8l1 1M10.2 10.2l1 1M2.8 11.2l1-1M10.2 3.8l1-1"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="create-layout">
+    <div class="preview-area">
+      <div class="preview-container">
+        <div class="preview-wrap">
+          <div class="preview-label">Desktop 4K</div>
+          <canvas id="previewDesktop" width="640" height="360"></canvas>
+        </div>
+        <div class="preview-wrap">
+          <div class="preview-label">Android</div>
+          <canvas id="previewMobile" width="145" height="314"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <div class="control-group">
+        <div class="control-label">Pattern</div>
+        <div class="style-grid" id="styleGrid"></div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">Palette</div>
+        <div class="palette-row" id="paletteRow"></div>
+      </div>
+
+      <div class="custom-gradient-panel" id="customGradientPanel">
+        <div class="control-label">Custom Colors</div>
+        <div class="color-picker-row">
+          <div class="color-picker-wrapper">
+            <input type="color" id="customColorStart" value="#d0bcff">
+            <span class="color-picker-label">Start</span>
+          </div>
+          <div class="color-picker-wrapper">
+            <input type="color" id="customColorEnd" value="#381e72">
+            <span class="color-picker-label">End</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">Mode</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="btnDark">
+            <span class="mode-icon mode-icon-dark"></span>
+            Dark
+          </button>
+          <button class="mode-btn" id="btnLight">
+            <span class="mode-icon mode-icon-light"></span>
+            Light
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">Color Grading</div>
+        
+        <div class="slider-value-row">
+          <span>Saturation</span>
+          <span class="slider-val" id="valSaturation">100%</span>
+        </div>
+        <input type="range" id="sliderSaturation" min="0" max="200" value="100">
+
+        <div class="slider-value-row">
+          <span>Contrast</span>
+          <span class="slider-val" id="valContrast">100%</span>
+        </div>
+        <input type="range" id="sliderContrast" min="50" max="150" value="100">
+
+        <div class="slider-value-row">
+          <span>Brightness</span>
+          <span class="slider-val" id="valBrightness">100%</span>
+        </div>
+        <input type="range" id="sliderBrightness" min="50" max="150" value="100">
+
+        <div class="slider-value-row">
+          <span>Vignette</span>
+          <span class="slider-val" id="valVignette">0%</span>
+        </div>
+        <input type="range" id="sliderVignette" min="0" max="100" value="0">
+      </div>
+
+      <div class="control-group">
+        <button class="btn-shuffle" id="btnShuffle">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          GENERATE VARIATION
+        </button>
+      </div>
+
+      <div class="export-group">
+        <button class="btn-export btn-desktop" id="btnDesktop">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="9" rx="1"/><path d="M5 15h6M8 12v3"/></svg>
+          Download Desktop
+        </button>
+        <div class="size-hint">3840 × 2160 px</div>
+
+        <button class="btn-export btn-mobile" id="btnMobile">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="8" height="14" rx="2"/><path d="M7.5 12.5h1"/></svg>
+          Download Android
+        </button>
+        <div class="size-hint">1440 × 3120 px</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+  function applyTheme(isDark) {
+    const r = document.documentElement.style;
+    if (isDark) {
+      r.setProperty('--bg', '#07080c');
+      r.setProperty('--bg-card', 'rgba(25, 26, 35, 0.45)');
+      r.setProperty('--bg-hover', 'rgba(45, 46, 65, 0.65)');
+      r.setProperty('--bg-nav', 'rgba(12, 13, 20, 0.4)');
+      r.setProperty('--text', '#f3effa');
+      r.setProperty('--text-muted', '#a69eb5');
+      r.setProperty('--border', 'rgba(255, 255, 255, 0.08)');
+      r.setProperty('--accent', '#d2c1ff');
+      r.setProperty('--on-accent', '#07080c');
+    } else {
+      r.setProperty('--bg', '#f5f4fa');
+      r.setProperty('--bg-card', 'rgba(255, 255, 255, 0.45)');
+      r.setProperty('--bg-hover', 'rgba(240, 240, 250, 0.7)');
+      r.setProperty('--bg-nav', 'rgba(245, 244, 250, 0.4)');
+      r.setProperty('--text', '#1a1824');
+      r.setProperty('--text-muted', '#6b667a');
+      r.setProperty('--border', 'rgba(0, 0, 0, 0.08)');
+      r.setProperty('--accent', '#5e45a0');
+      r.setProperty('--on-accent', '#ffffff');
+    }
+  }
+
+  const saved = localStorage.getItem('wallgen-theme') || 'dark';
+  applyTheme(saved === 'dark');
+  if (saved === 'light') {
+    document.getElementById('themeLight').classList.add('active');
+    document.getElementById('themeDark').classList.remove('active');
+  }
+
+  document.getElementById('themeDark').onclick = () => {
+    localStorage.setItem('wallgen-theme', 'dark');
+    applyTheme(true);
+    document.getElementById('themeDark').classList.add('active');
+    document.getElementById('themeLight').classList.remove('active');
+  };
+
+  document.getElementById('themeLight').onclick = () => {
+    localStorage.setItem('wallgen-theme', 'light');
+    applyTheme(false);
+    document.getElementById('themeLight').classList.add('active');
+    document.getElementById('themeDark').classList.remove('active');
+  };
+</script>
+
+<!-- Fullscreen Visualizer Modal -->
+<div class="fullscreen-visualizer" id="fullscreenVisualizer">
+  <button class="fullscreen-close" id="btnToggleClock" title="Toggle Clock" style="right: 80px;">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 2"/></svg>
+  </button>
+  <button class="fullscreen-close" id="btnCloseFullscreen" title="Close Fullscreen">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="fullscreen-canvas-wrapper">
+    <canvas id="fullscreenCanvas"></canvas>
+  </div>
+</div>
+
+<script type="module" src="js/create.js?v=2.4"></script>
+</body>
+</html>

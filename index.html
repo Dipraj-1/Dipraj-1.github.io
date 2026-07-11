@@ -265,6 +265,149 @@
   }
   @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
 
+  /* ── BOOT SCREEN ── */
+  #boot-screen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(0,255,136,0.16), transparent 28%),
+                radial-gradient(circle at 80% 20%, rgba(0,238,255,0.08), transparent 25%),
+                linear-gradient(180deg, rgba(0,0,0,0.96), rgba(0,0,0,0.98));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    color: var(--green);
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+  }
+  #boot-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,136,0.06) 2px,
+      rgba(0,255,136,0.06) 4px
+    );
+    pointer-events: none;
+  }
+  .boot-content {
+    position: relative;
+    text-align: left;
+    width: min(520px, calc(100% - 3rem));
+    padding: 2rem 2.25rem;
+    border: 1px solid rgba(0,255,136,0.22);
+    background: rgba(0,0,0,0.78);
+    box-shadow: 0 0 120px rgba(0,255,136,0.14);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+  }
+  .boot-logo {
+    display: block;
+    width: 84px;
+    height: 84px;
+    object-fit: contain;
+    margin: 0 auto 1rem;
+    filter: drop-shadow(0 0 18px rgba(0,255,136,0.35));
+    border-radius: 18px;
+    background: rgba(255,255,255,0.03);
+    padding: 0.65rem;
+  }
+  .boot-content::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 20%, transparent 80%, rgba(255,255,255,0.04));
+    pointer-events: none;
+  }
+  .boot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .boot-label {
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 0 22px rgba(0,255,136,0.45);
+  }
+  .boot-version {
+    font-size: 0.48rem;
+    color: rgba(0,255,136,0.7);
+    letter-spacing: 3px;
+  }
+  .boot-meta {
+    margin-bottom: 1.25rem;
+    font-size: 0.42rem;
+    color: rgba(0,255,136,0.7);
+    letter-spacing: 2px;
+    line-height: 1.8;
+  }
+  .boot-terminal {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 1.4rem;
+  }
+  .boot-line {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.44rem;
+    color: rgba(0,255,136,0.92);
+  }
+  .boot-line span {
+    display: inline-flex;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0,255,136,0.95);
+    box-shadow: 0 0 8px rgba(0,255,136,0.4);
+    animation: boot-pulse 1.8s infinite ease-in-out;
+  }
+  .boot-progress {
+    width: 100%;
+    height: 10px;
+    background: rgba(0,255,136,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(0,255,136,0.12);
+  }
+  .boot-progress span {
+    display: block;
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,255,136,1), rgba(0,238,255,0.5));
+    animation: boot-progress 3.2s ease forwards;
+  }
+  .boot-subtext {
+    font-size: 0.45rem;
+    color: rgba(0,255,136,0.6);
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  @keyframes boot-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.4); opacity: 0.45; }
+  }
+  @keyframes boot-progress {
+    0% { width: 0%; }
+    80% { width: 94%; }
+    100% { width: 100%; }
+  }
+  #boot-screen {
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #boot-screen.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   /* ── SECTIONS ── */
   section {
     position: relative; z-index: 1;
@@ -589,8 +732,25 @@
 </head>
 <body>
 
+<div id="boot-screen">
+  <div class="boot-content">
+    <img class="boot-logo" src="assets/Gemini_Generated_Image_b0kf5mb0kf5mb0kf.png" alt="Website logo" />
+    <div class="boot-header">
+      <span class="boot-label">WALL-GEN</span>
+      <span class="boot-version">SYSTEM BOOT</span>
+    </div>
+    <div class="boot-meta">INITIALIZING SECURE ENVIRONMENT</div>
+    <div class="boot-terminal">
+      <div class="boot-line"><span></span> LOADING GRAPHICS PIPELINE</div>
+      <div class="boot-line"><span></span> CHECKING NETWORK ROUTES</div>
+      <div class="boot-line"><span></span> SYNCHRONIZING MODULES</div>
+    </div>
+    <div class="boot-progress"><span></span></div>
+    <div class="boot-subtext">ACCESS GRANTED. WELCOME, OPERATOR.</div>
+  </div>
+</div>
+
 <!-- NAV -->
-<nav>
   <a class="nav-logo" href="#">DDT.DEV</a>
   <ul class="nav-links">
     <li><a href="#skills">SKILLS</a></li>
@@ -723,6 +883,18 @@
       </div>
       <a class="project-link" href="https://github.com/Dipraj-1" target="_blank">▶ VIEW GITHUB</a>
     </div>
+    <div class="project-card fade-in">
+      <div class="project-id">PROJECT_004</div>
+      <div class="project-name">wall-gen — GENERATIVE WALLPAPERS</div>
+      <p class="project-desc">A beautiful, minimalist generative wallpaper designer that creates 4K desktop and mobile wallpapers using procedural algorithms and noise fields.</p>
+      <div class="project-tags">
+        <span class="tag tag-cyan">HTML5 Canvas</span>
+        <span class="tag tag-purple">JavaScript</span>
+        <span class="tag tag-green">Generative Art</span>
+        <span class="tag tag-pink">Procedural</span>
+      </div>
+      <a class="project-link" href="./wall-gen/index.html" target="_blank">▶ LAUNCH WEB APP</a>
+    </div>
   </div>
 </section>
 
@@ -854,6 +1026,12 @@
       a.style.color = a.getAttribute('href') === `#${current}`
         ? 'var(--green)' : '';
     });
+  });
+
+  window.addEventListener('load', () => {
+    const boot = document.getElementById('boot-screen');
+    if (!boot) return;
+    setTimeout(() => boot.classList.add('hide'), 500);
   });
 </script>
 </body>
