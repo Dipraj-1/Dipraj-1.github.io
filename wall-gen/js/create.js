@@ -348,4 +348,13 @@ function ensureFontLoaded(callback) {
   });
 }
 
+const bootScreen = document.getElementById('boot-screen');
+if (bootScreen) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      bootScreen.classList.add('hide');
+    }, 1100);
+  });
+}
+
 ensureFontLoaded(render);
