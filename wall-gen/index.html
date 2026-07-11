@@ -6,33 +6,6 @@
   <title>WALL-GEN — Generative Wallpapers</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><text x='16' y='21' text-anchor='middle' font-family='-apple-system,Helvetica,Arial,sans-serif' font-size='13' font-weight='600' fill='white'>WPR</text></svg>">
   <link rel="stylesheet" href="styles.css?v=2.4">
-  <script>
-    (function() {
-      const saved = localStorage.getItem('wallgen-theme') || 'dark';
-      const r = document.documentElement.style;
-      if (saved === 'light') {
-        r.setProperty('--bg', '#f5f4fa');
-        r.setProperty('--bg-card', 'rgba(255, 255, 255, 0.45)');
-        r.setProperty('--bg-hover', 'rgba(240, 240, 250, 0.7)');
-        r.setProperty('--bg-nav', 'rgba(245, 244, 250, 0.4)');
-        r.setProperty('--text', '#1a1824');
-        r.setProperty('--text-muted', '#6b667a');
-        r.setProperty('--border', 'rgba(0, 0, 0, 0.08)');
-        r.setProperty('--accent', '#5e45a0');
-        r.setProperty('--on-accent', '#ffffff');
-      } else {
-        r.setProperty('--bg', '#07080c');
-        r.setProperty('--bg-card', 'rgba(25, 26, 35, 0.45)');
-        r.setProperty('--bg-hover', 'rgba(45, 46, 65, 0.65)');
-        r.setProperty('--bg-nav', 'rgba(12, 13, 20, 0.4)');
-        r.setProperty('--text', '#f3effa');
-        r.setProperty('--text-muted', '#a69eb5');
-        r.setProperty('--border', 'rgba(255, 255, 255, 0.08)');
-        r.setProperty('--accent', '#d2c1ff');
-        r.setProperty('--on-accent', '#07080c');
-      }
-    })();
-  </script>
 </head>
 <body>
 
@@ -173,17 +146,49 @@
       </div>
 
       <div class="export-group">
-        <button class="btn-export btn-desktop" id="btnDesktop">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="9" rx="1"/><path d="M5 15h6M8 12v3"/></svg>
-          Download Desktop
-        </button>
-        <div class="size-hint">3840 × 2160 px</div>
+        <div class="download-wrapper">
+          <button class="btn-export btn-desktop" id="btnDesktopToggle">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="9" rx="1"/><path d="M5 15h6M8 12v3"/></svg>
+            Download Desktop
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="dropdown-icon"><path d="M3 5l3 3 3-3"/></svg>
+          </button>
+          <div class="dropdown-menu" id="desktopDropdown">
+            <button class="dropdown-item" data-resolution="4k" data-ratio="16:9">
+              <div>4K</div>
+              <div class="resolution-info">3840 × 2160</div>
+            </button>
+            <button class="dropdown-item" data-resolution="2k" data-ratio="16:9">
+              <div>2K</div>
+              <div class="resolution-info">2560 × 1440</div>
+            </button>
+            <button class="dropdown-item" data-resolution="fhd" data-ratio="16:9">
+              <div>FHD</div>
+              <div class="resolution-info">1920 × 1080</div>
+            </button>
+          </div>
+        </div>
 
-        <button class="btn-export btn-mobile" id="btnMobile">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="8" height="14" rx="2"/><path d="M7.5 12.5h1"/></svg>
-          Download Android
-        </button>
-        <div class="size-hint">1440 × 3120 px</div>
+        <div class="download-wrapper">
+          <button class="btn-export btn-mobile" id="btnMobileToggle">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="8" height="14" rx="2"/><path d="M7.5 12.5h1"/></svg>
+            Download Android
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="dropdown-icon"><path d="M3 5l3 3 3-3"/></svg>
+          </button>
+          <div class="dropdown-menu" id="mobileDropdown">
+            <button class="dropdown-item" data-resolution="4k" data-ratio="9:19.5">
+              <div>4K</div>
+              <div class="resolution-info">1440 × 3120</div>
+            </button>
+            <button class="dropdown-item" data-resolution="2k" data-ratio="9:19.5">
+              <div>2K</div>
+              <div class="resolution-info">1080 × 2340</div>
+            </button>
+            <button class="dropdown-item" data-resolution="fhd" data-ratio="9:19.5">
+              <div>FHD</div>
+              <div class="resolution-info">720 × 1560</div>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

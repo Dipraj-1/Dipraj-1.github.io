@@ -198,9 +198,9 @@ document.getElementById('btnDark').onclick = () => {
   inverted = false;
   document.getElementById('btnDark').classList.add('active');
   document.getElementById('btnLight').classList.remove('active');
+  document.getElementById('themeDark').classList.add('active');
+  document.getElementById('themeLight').classList.remove('active');
   cacheValid = false;
-  // Sync to website theme Dark
-  document.getElementById('themeDark').click();
   render();
 };
 
@@ -208,9 +208,9 @@ document.getElementById('btnLight').onclick = () => {
   inverted = true;
   document.getElementById('btnLight').classList.add('active');
   document.getElementById('btnDark').classList.remove('active');
+  document.getElementById('themeLight').classList.add('active');
+  document.getElementById('themeDark').classList.remove('active');
   cacheValid = false;
-  // Sync to website theme Light
-  document.getElementById('themeLight').click();
   render();
 };
 
@@ -221,14 +221,78 @@ document.getElementById('btnShuffle').onclick = () => {
   render();
 };
 
-// Download
-document.getElementById('btnDesktop').onclick = () => {
-  exportWallpaper(DESKTOP_W, DESKTOP_H, currentPattern, currentPalette, seed, inverted, 'wallgen-desktop-4k.png', getGrading());
+// Resolution options for downloads
+const desktopResolutions = {
+  '4k': { w: DESKTOP_W, h: DESKTOP_H, filename: 'wallgen-desktop-4k.png', name: '4K' },
+  '2k': { w: 2560, h: 1440, filename: 'wallgen-desktop-2k.png', name: '2K' },
+  'fhd': { w: 1920, h: 1080, filename: 'wallgen-desktop-fhd.png', name: 'FHD' }
 };
 
-document.getElementById('btnMobile').onclick = () => {
-  exportWallpaper(MOBILE_W, MOBILE_H, currentPattern, currentPalette, seed, inverted, 'wallgen-android.png', getGrading());
+const mobileResolutions = {
+  '4k': { w: MOBILE_W, h: MOBILE_H, filename: 'wallgen-android-4k.png', name: '4K' },
+  '2k': { w: 1080, h: 2340, filename: 'wallgen-android-2k.png', name: '2K' },
+  'fhd': { w: 720, h: 1560, filename: 'wallgen-android-fhd.png', name: 'FHD' }
 };
+
+// Dropdown menu handlers
+const desktopDropdown = document.getElementById('desktopDropdown');
+const mobileDropdown = document.getElementById('mobileDropdown');
+const btnDesktopToggle = document.getElementById('btnDesktopToggle');
+const btnMobileToggle = document.getElementById('btnMobileToggle');
+
+btnDesktopToggle.addEventListener('click', () => {
+  desktopDropdown.classList.toggle('visible');
+  btnDesktopToggle.classList.toggle('active');
+  mobileDropdown.classList.remove('visible');
+  btnMobileToggle.classList.remove('active');
+});
+
+btnMobileToggle.addEventListener('click', () => {
+  mobileDropdown.classList.toggle('visible');
+  btnMobileToggle.classList.toggle('active');
+  desktopDropdown.classList.remove('visible');
+  btnDesktopToggle.classList.remove('active');
+});
+
+// Desktop resolution selections
+document.querySelectorAll('#desktopDropdown .dropdown-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const resolution = item.dataset.resolution;
+    const config = desktopResolutions[resolution];
+    exportWallpaper(config.w, config.h, currentPattern, currentPalette, seed, inverted, config.filename, getGrading());
+    desktopDropdown.classList.remove('visible');
+    btnDesktopToggle.classList.remove('active');
+  });
+});
+
+// Mobile resolution selections
+document.querySelectorAll('#mobileDropdown .dropdown-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const resolution = item.dataset.resolution;
+    const config = mobileResolutions[resolution];
+    exportWallpaper(config.w, config.h, currentPattern, currentPalette, seed, inverted, config.filename, getGrading());
+    mobileDropdown.classList.remove('visible');
+    btnMobileToggle.classList.remove('active');
+  });
+});
+
+// Close dropdowns when clicking outside, and hide sidebar if clicking outside it
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.download-wrapper')) {
+    desktopDropdown.classList.remove('visible');
+    mobileDropdown.classList.remove('visible');
+    btnDesktopToggle.classList.remove('active');
+    btnMobileToggle.classList.remove('active');
+  }
+  
+  // Hide sidebar if clicking outside sidebar, navbar, and dropdown wrappers
+  if (!e.target.closest('.controls-panel') && !e.target.closest('nav') && !e.target.closest('.download-wrapper')) {
+    if (sidebarVisible) {
+      controlsPanel.classList.remove('visible');
+      sidebarVisible = false;
+    }
+  }
+});
 
 // Fullscreen Visualizer
 const fsVisualizer = document.getElementById('fullscreenVisualizer');
@@ -298,32 +362,14 @@ function updateAmbientBackground() {
   const r = document.documentElement.style;
   r.setProperty('--ambient-1', color1);
   r.setProperty('--ambient-2', color2);
-  
-  const websiteTheme = localStorage.getItem('wallgen-theme') || 'dark';
-  const isDark = websiteTheme === 'dark';
-  const wallBg = getBgColor(currentPalette, inverted);
-  
-  if (isDark) {
-    const darkBg = mixColors('#050508', wallBg, 0.08);
-    r.setProperty('--bg', darkBg);
-    r.setProperty('--bg-card', 'rgba(20, 21, 28, 0.55)');
-    r.setProperty('--bg-nav', 'rgba(8, 9, 14, 0.5)');
-    r.setProperty('--accent', '#d2c1ff');
-    r.setProperty('--on-accent', '#07080c');
-  } else {
-    const lightBg = mixColors('#ffffff', wallBg, 0.08);
-    r.setProperty('--bg', lightBg);
-    r.setProperty('--bg-card', 'rgba(255, 255, 255, 0.55)');
-    r.setProperty('--bg-nav', 'rgba(255, 255, 255, 0.5)');
-    r.setProperty('--accent', '#5e45a0');
-    r.setProperty('--on-accent', '#ffffff');
-  }
 }
 
 document.getElementById('themeDark').addEventListener('click', () => {
   inverted = false;
   document.getElementById('btnDark').classList.add('active');
   document.getElementById('btnLight').classList.remove('active');
+  document.getElementById('themeDark').classList.add('active');
+  document.getElementById('themeLight').classList.remove('active');
   cacheValid = false;
   render();
 });
@@ -331,6 +377,8 @@ document.getElementById('themeLight').addEventListener('click', () => {
   inverted = true;
   document.getElementById('btnLight').classList.add('active');
   document.getElementById('btnDark').classList.remove('active');
+  document.getElementById('themeLight').classList.add('active');
+  document.getElementById('themeDark').classList.remove('active');
   cacheValid = false;
   render();
 });
@@ -358,3 +406,58 @@ if (bootScreen) {
 }
 
 ensureFontLoaded(render);
+
+// Floating navbar and sidebar hover detection
+const nav = document.querySelector('nav');
+const controlsPanel = document.querySelector('.controls-panel');
+let navVisible = false;
+let sidebarVisible = false;
+
+document.addEventListener('mousemove', (e) => {
+  // Show navbar only when cursor is in top 80px
+  if (e.clientY < 80) {
+    if (!navVisible) {
+      nav.style.transform = 'translateX(-50%) translateY(0)';
+      nav.style.opacity = '1';
+      nav.style.pointerEvents = 'auto';
+      controlsPanel.classList.remove('expanded');
+      navVisible = true;
+    }
+  } else {
+    // Hide navbar when cursor moves down past 80px
+    if (navVisible) {
+      nav.style.transform = 'translateX(-50%) translateY(-130%)';
+      nav.style.opacity = '0';
+      nav.style.pointerEvents = 'none';
+      controlsPanel.classList.add('expanded');
+      navVisible = false;
+    }
+  }
+  
+  // Show sidebar when cursor is in right 80px
+  const windowWidth = window.innerWidth;
+  if (e.clientX > windowWidth - 80) {
+    if (!sidebarVisible) {
+      controlsPanel.classList.add('visible');
+      sidebarVisible = true;
+    }
+  }
+});
+
+// Keep sidebar visible when hovering over it
+controlsPanel.addEventListener('mouseenter', () => {
+  sidebarVisible = true;
+  controlsPanel.classList.add('visible');
+});
+
+// Hide sidebar only when clicking outside
+document.addEventListener('click', (e) => {
+  // Check if click is outside the sidebar and not on navbar
+  if (!e.target.closest('.download-wrapper') && !e.target.closest('.controls-panel') && !e.target.closest('nav')) {
+    // Only hide if sidebar is visible
+    if (sidebarVisible) {
+      controlsPanel.classList.remove('visible');
+      sidebarVisible = false;
+    }
+  }
+});
