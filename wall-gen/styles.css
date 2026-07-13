@@ -21,6 +21,13 @@
   --transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   --glass-blur: blur(28px) saturate(180%);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  
+  /* Default Mobile Theme Variables */
+  --bg-popup: rgba(15, 16, 26, 0.98);
+  --bg-dock: rgba(12, 13, 20, 0.96);
+  --border-popup: rgba(210, 193, 255, 0.3);
+  --bg-dock-btn: rgba(255, 255, 255, 0.03);
+  --box-shadow-popup: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.12);
 }
 
 html, body {
@@ -1432,11 +1439,40 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
 }
 
+/* ── Categorized Popup & Mobile Dock Base Styles (Desktop Defaults) ── */
+.control-group-popup {
+  display: block;
+  margin-bottom: 24px;
+}
+.popup-header {
+  display: none;
+}
+.mobile-popup-overlay {
+  display: none;
+}
+.mobile-dock {
+  display: none;
+}
+
 @media (max-width: 1024px) {
-  /* Navigation */
+  /* Navigation (Static on Mobile) */
   nav {
-    padding: 1rem;
-    height: 4rem;
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-nav);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: 1.2rem;
+    height: auto;
   }
   .nav-logo-text {
     display: none; /* Hide logo text to save space, keeping logo mark */
@@ -1461,8 +1497,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
   /* Main / Sections Layout */
   main {
-    padding-top: 4rem;
-    height: calc(100vh - 4rem);
+    padding-top: 0; /* Nav is static, no top padding needed */
+    height: auto;
   }
   .section {
     padding: 24px 16px;
@@ -1476,15 +1512,16 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
   /* Create Page Layout Overhaul for Mobile/Tablet */
   .create-layout {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 4rem);
-    overflow: hidden;
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding-bottom: calc(30vh + 20px); /* Space for the bottom fixed dock bar */
   }
 
   .preview-area {
     position: relative;
-    min-height: 45vh;
+    min-height: 380px;
+    height: auto;
     width: 100%;
     padding: 18px 16px;
     display: flex;
@@ -1498,35 +1535,190 @@ input[type="range"]::-webkit-slider-thumb:hover {
   .preview-container {
     width: 100%;
     max-width: 100%;
-    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
-    transform: scale(0.72);
+    align-items: center;
+    transform: none;
     margin: 0 auto;
     gap: 20px;
+    padding: 10px;
   }
 
   .preview-wrap {
-    flex: 1 1 260px;
-    min-width: 240px;
-    width: clamp(240px, 40vw, 420px);
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
   }
 
+  #previewDesktop {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+  }
+
+  #previewMobile {
+    width: 100%;
+    max-width: 130px;
+    height: auto;
+  }
+
+  /* Hide default vertical controls panel on mobile, it acts as popup container */
   .controls-panel {
     position: relative;
-    top: auto;
-    right: auto;
-    bottom: auto;
+    z-index: 1000;
     width: 100%;
-    min-height: auto;
-    border-radius: var(--radius) var(--radius) 0 0;
-    margin-top: 0;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
     box-shadow: none;
-    opacity: 1; /* always opaque on mobile since there is no hover state */
-    padding: 22px 18px;
+    opacity: 1;
+    transform: none;
+    pointer-events: none;
+    overflow-y: visible;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   
   .controls-panel:hover {
     transform: none;
+  }
+
+  /* Hide default shuffle button, mobile has dock button */
+  #desktopShuffleGroup {
+    display: none;
+  }
+
+  /* Floating pop-out modal cards on mobile - Docked over button area */
+  .control-group-popup {
+    display: none;
+    margin-bottom: 0;
+  }
+  .control-group-popup.active {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    height: calc(30vh - 24px);
+    background: var(--bg-popup);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1.5px solid var(--border-popup);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--box-shadow-popup);
+    z-index: 120;
+    pointer-events: auto;
+    overflow-y: auto;
+    animation: popupPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes popupPop {
+    from { transform: scale(0.95) translateY(10px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  .popup-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .popup-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    transition: var(--transition);
+  }
+  .popup-close-btn:hover {
+    color: var(--text);
+  }
+
+  /* Backdrop Overlay */
+  .mobile-popup-overlay.active {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 8, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 110;
+    pointer-events: auto;
+  }
+
+  /* Bottom Dock Bar - 30% Height, Vertical Flow */
+  .mobile-dock {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30vh;
+    background: var(--bg-dock);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-top: 1.5px solid var(--border-popup);
+    z-index: 101;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  }
+  .mobile-dock::-webkit-scrollbar {
+    width: 4px;
+  }
+  .mobile-dock::-webkit-scrollbar-thumb {
+    background: var(--border-popup);
+    border-radius: 4px;
+  }
+  .dock-btn {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    background: var(--bg-dock-btn);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    border-radius: 12px;
+    transition: var(--transition);
+    user-select: none;
+  }
+  .dock-btn svg {
+    stroke: currentColor;
+    transition: var(--transition);
+  }
+  .dock-btn:active, .dock-btn.active {
+    background: var(--accent-container);
+    color: var(--accent);
+  }
+  .dock-btn:active svg, .dock-btn.active svg {
+    transform: scale(1.08);
   }
 
   .style-grid {
@@ -1536,18 +1728,21 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 @media (max-width: 768px) {
   .preview-area {
-    min-height: 42vh;
+    min-height: 340px;
     padding: 16px 14px;
   }
 
   .preview-container {
-    transform: scale(0.66);
-    gap: 18px;
+    transform: none;
+    gap: 16px;
   }
 
-  .preview-wrap {
-    width: 100%;
-    max-width: 100%;
+  #previewDesktop {
+    max-width: 220px;
+  }
+
+  #previewMobile {
+    max-width: 110px;
   }
 }
 
@@ -1557,16 +1752,19 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
   
   .preview-container {
-    transform: scale(0.55); /* scale down further on very small mobile */
-    gap: 12px;
-    justify-content: center;
+    transform: none;
+    gap: 0;
   }
 
   .preview-wrap:first-child {
     display: none;
   }
+
+  #previewMobile {
+    max-width: 160px;
+  }
   
   .controls-panel {
-    padding: 18px 14px;
+    padding: 0;
   }
 }

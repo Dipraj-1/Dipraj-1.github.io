@@ -179,7 +179,7 @@
 
   .hero-name {
     font-family: 'Press Start 2P', monospace;
-    font-size: clamp(1rem, 3vw, 1.6rem);
+    font-size: clamp(1.1rem, 5vw, 1.8rem);
     color: #fff;
     text-shadow: 0 0 20px var(--green), 3px 3px 0 var(--dark3);
     line-height: 1.6;
@@ -189,7 +189,7 @@
 
   .hero-title {
     font-family: 'VT323', monospace;
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
     color: var(--green);
     letter-spacing: 3px;
     margin-bottom: 1.5rem;
@@ -443,7 +443,7 @@
   /* ── SKILLS ── */
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
   }
   .skill-card {
@@ -500,7 +500,7 @@
   /* ── PROJECTS ── */
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
   }
   .project-card {
@@ -634,6 +634,8 @@
     font-size: 0.9rem;
     line-height: 2.2;
     color: rgba(0,255,136,0.8);
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
   .terminal-line .prompt { color: var(--purple); }
   .terminal-line .cmd { color: var(--cyan); }
@@ -643,6 +645,7 @@
     text-decoration: none;
     border-bottom: 1px solid rgba(0,255,136,0.3);
     transition: all 0.2s;
+    word-break: break-all;
   }
   .terminal-line a:hover { color: var(--cyan); border-color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
 
@@ -685,12 +688,95 @@
     100% { text-shadow: 0 0 20px var(--green), 3px 3px 0 var(--dark3); }
   }
 
+  /* Nav Toggle Button */
+  .nav-toggle {
+    display: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    color: var(--green);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px var(--green);
+    transition: all 0.2s;
+    user-select: none;
+    z-index: 1100;
+  }
+  .nav-toggle:hover, .nav-toggle.active {
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+  }
+
   /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-toggle { display: block; }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: rgba(5,10,15,0.98);
+      border-bottom: 2px solid var(--border);
+      backdrop-filter: blur(15px);
+      padding: 2.5rem 1.5rem;
+      gap: 2rem;
+      transform: translateY(-150%);
+      transition: transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+      z-index: 999;
+      list-style: none;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+    .nav-links.active {
+      transform: translateY(0);
+    }
+    .nav-links a {
+      font-size: 0.6rem;
+      color: rgba(0,255,136,0.7);
+      width: 100%;
+      text-align: center;
+      padding: 12px 0;
+      border-bottom: none;
+    }
+    .nav-links a:hover {
+      color: var(--green);
+      text-shadow: 0 0 8px var(--green);
+      border-bottom: none;
+    }
+
+    section { padding: 4rem 1.5rem; }
+
+    .status-bar {
+      gap: 1rem;
+      padding: 6px 1.5rem;
+      font-size: 0.34rem;
+      justify-content: space-between;
+    }
+  }
+
   @media (max-width: 600px) {
-    nav { padding: 0 1rem; }
-    .nav-links { gap: 0.8rem; }
-    .nav-links a { font-size: 0.38rem; }
     section { padding: 4rem 1rem; }
+    .terminal-body { padding: 1.25rem; }
+  }
+
+  @media (max-width: 480px) {
+    .boot-content {
+      padding: 1.5rem 1.2rem;
+      width: calc(100% - 1.5rem);
+    }
+    .status-bar {
+      padding: 6px 0.75rem;
+      font-size: 0.32rem;
+    }
+    .status-bar .status-item:nth-child(2),
+    .status-bar .status-item:nth-child(3) {
+      display: none;
+    }
   }
 
   /* ── PIXEL CORNERS ── */
@@ -751,8 +837,10 @@
 </div>
 
 <!-- NAV -->
+<nav>
   <a class="nav-logo" href="#">DDT.DEV</a>
-  <ul class="nav-links">
+  <button class="nav-toggle" id="nav-toggle">[ MENU ]</button>
+  <ul class="nav-links" id="nav-links">
     <li><a href="#skills">SKILLS</a></li>
     <li><a href="#projects">PROJECTS</a></li>
     <li><a href="#about">ABOUT</a></li>
@@ -780,8 +868,8 @@
   <h1 class="hero-name">DIPRAJ DEY TILOK</h1>
   <div class="hero-title">[ BEGINNER DEVELOPER ]</div>
   <p class="hero-bio">
-    Tech-savvy &amp; fast learner. Building Discord bots, server tools,<br/>
-    checker &amp; dumping utilities. Currently studying @ Sylhet Govt College.<br/>
+    Tech-savvy &amp; fast learner. Building Discord bots, server tools,
+    checker &amp; dumping utilities. Currently studying @ Sylhet Govt College.
     Interested in ethical hacking &amp; the JS ecosystem.<span class="cursor"></span>
   </p>
   <div class="hero-btns">
@@ -1027,6 +1115,31 @@
         ? 'var(--green)' : '';
     });
   });
+
+  // Mobile Nav Toggle
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinksContainer = document.getElementById('nav-links');
+  const links = document.querySelectorAll('.nav-links a');
+
+  if (navToggle && navLinksContainer) {
+    navToggle.addEventListener('click', () => {
+      navLinksContainer.classList.toggle('active');
+      navToggle.classList.toggle('active');
+      if (navLinksContainer.classList.contains('active')) {
+        navToggle.textContent = '[ CLOSE ]';
+      } else {
+        navToggle.textContent = '[ MENU ]';
+      }
+    });
+
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinksContainer.classList.remove('active');
+        navToggle.classList.remove('active');
+        navToggle.textContent = '[ MENU ]';
+      });
+    });
+  }
 
   window.addEventListener('load', () => {
     const boot = document.getElementById('boot-screen');

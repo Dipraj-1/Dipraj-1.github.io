@@ -414,6 +414,8 @@ let navVisible = false;
 let sidebarVisible = false;
 
 document.addEventListener('mousemove', (e) => {
+  if (window.innerWidth <= 1024) return; // Skip hover navbar/sidebar toggling on mobile/tablet viewports
+
   // Show navbar only when cursor is in top 80px
   if (e.clientY < 80) {
     if (!navVisible) {
@@ -446,12 +448,15 @@ document.addEventListener('mousemove', (e) => {
 
 // Keep sidebar visible when hovering over it
 controlsPanel.addEventListener('mouseenter', () => {
+  if (window.innerWidth <= 1024) return; // Skip on mobile/tablet
   sidebarVisible = true;
   controlsPanel.classList.add('visible');
 });
 
 // Hide sidebar only when clicking outside
 document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 1024) return; // Skip on mobile/tablet
+
   // Check if click is outside the sidebar and not on navbar
   if (!e.target.closest('.download-wrapper') && !e.target.closest('.controls-panel') && !e.target.closest('nav')) {
     // Only hide if sidebar is visible

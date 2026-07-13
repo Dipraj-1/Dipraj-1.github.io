@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WALL-GEN — Generative Wallpapers</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><text x='16' y='21' text-anchor='middle' font-family='-apple-system,Helvetica,Arial,sans-serif' font-size='13' font-weight='600' fill='white'>WPR</text></svg>">
-  <link rel="stylesheet" href="styles.css?v=2.4">
+  <link rel="stylesheet" href="styles.css?v=2.6">
 </head>
 <body>
 
@@ -68,73 +68,94 @@
     </div>
 
     <div class="controls-panel">
-      <div class="control-group">
-        <div class="control-label">Pattern</div>
-        <div class="style-grid" id="styleGrid"></div>
+      <!-- Popup Overlay Backdrop -->
+      <div class="mobile-popup-overlay" id="popupOverlay" onclick="closeAllPopups()"></div>
+
+      <!-- Pattern popup drawer -->
+      <div class="control-group-popup" id="groupPattern">
+        <div class="popup-header">
+          <span class="popup-title">Choose Pattern</span>
+          <button class="popup-close-btn" onclick="closeAllPopups()">✕</button>
+        </div>
+        <div class="control-group">
+          <div class="style-grid" id="styleGrid"></div>
+        </div>
       </div>
 
-      <div class="control-group">
-        <div class="control-label">Palette</div>
-        <div class="palette-row" id="paletteRow"></div>
-      </div>
-
-      <div class="custom-gradient-panel" id="customGradientPanel">
-        <div class="control-label">Custom Colors</div>
-        <div class="color-picker-row">
-          <div class="color-picker-wrapper">
-            <input type="color" id="customColorStart" value="#d0bcff">
-            <span class="color-picker-label">Start</span>
+      <!-- Palette popup drawer -->
+      <div class="control-group-popup" id="groupPalette">
+        <div class="popup-header">
+          <span class="popup-title">Select Palette</span>
+          <button class="popup-close-btn" onclick="closeAllPopups()">✕</button>
+        </div>
+        <div class="control-group">
+          <div class="palette-row" id="paletteRow"></div>
+        </div>
+        <div class="custom-gradient-panel" id="customGradientPanel">
+          <div class="control-label">Custom Colors</div>
+          <div class="color-picker-row">
+            <div class="color-picker-wrapper">
+              <input type="color" id="customColorStart" value="#d0bcff">
+              <span class="color-picker-label">Start</span>
+            </div>
+            <div class="color-picker-wrapper">
+              <input type="color" id="customColorEnd" value="#381e72">
+              <span class="color-picker-label">End</span>
+            </div>
           </div>
-          <div class="color-picker-wrapper">
-            <input type="color" id="customColorEnd" value="#381e72">
-            <span class="color-picker-label">End</span>
+        </div>
+      </div>
+
+      <!-- Grading and Mode popup drawer -->
+      <div class="control-group-popup" id="groupGrading">
+        <div class="popup-header">
+          <span class="popup-title">Color Grading & Mode</span>
+          <button class="popup-close-btn" onclick="closeAllPopups()">✕</button>
+        </div>
+        <div class="control-group">
+          <div class="control-label">Mode</div>
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btnDark">
+              <span class="mode-icon mode-icon-dark"></span>
+              Dark
+            </button>
+            <button class="mode-btn" id="btnLight">
+              <span class="mode-icon mode-icon-light"></span>
+              Light
+            </button>
           </div>
         </div>
-      </div>
+        <div class="control-group">
+          <div class="control-label">Sliders</div>
+          
+          <div class="slider-value-row">
+            <span>Saturation</span>
+            <span class="slider-val" id="valSaturation">100%</span>
+          </div>
+          <input type="range" id="sliderSaturation" min="0" max="200" value="100">
 
-      <div class="control-group">
-        <div class="control-label">Mode</div>
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="btnDark">
-            <span class="mode-icon mode-icon-dark"></span>
-            Dark
-          </button>
-          <button class="mode-btn" id="btnLight">
-            <span class="mode-icon mode-icon-light"></span>
-            Light
-          </button>
+          <div class="slider-value-row">
+            <span>Contrast</span>
+            <span class="slider-val" id="valContrast">100%</span>
+          </div>
+          <input type="range" id="sliderContrast" min="50" max="150" value="100">
+
+          <div class="slider-value-row">
+            <span>Brightness</span>
+            <span class="slider-val" id="valBrightness">100%</span>
+          </div>
+          <input type="range" id="sliderBrightness" min="50" max="150" value="100">
+
+          <div class="slider-value-row">
+            <span>Vignette</span>
+            <span class="slider-val" id="valVignette">0%</span>
+          </div>
+          <input type="range" id="sliderVignette" min="0" max="100" value="0">
         </div>
       </div>
 
-      <div class="control-group">
-        <div class="control-label">Color Grading</div>
-        
-        <div class="slider-value-row">
-          <span>Saturation</span>
-          <span class="slider-val" id="valSaturation">100%</span>
-        </div>
-        <input type="range" id="sliderSaturation" min="0" max="200" value="100">
-
-        <div class="slider-value-row">
-          <span>Contrast</span>
-          <span class="slider-val" id="valContrast">100%</span>
-        </div>
-        <input type="range" id="sliderContrast" min="50" max="150" value="100">
-
-        <div class="slider-value-row">
-          <span>Brightness</span>
-          <span class="slider-val" id="valBrightness">100%</span>
-        </div>
-        <input type="range" id="sliderBrightness" min="50" max="150" value="100">
-
-        <div class="slider-value-row">
-          <span>Vignette</span>
-          <span class="slider-val" id="valVignette">0%</span>
-        </div>
-        <input type="range" id="sliderVignette" min="0" max="100" value="0">
-      </div>
-
-      <div class="control-group">
+      <!-- Desktop Shuffle section (hidden on mobile) -->
+      <div class="control-group" id="desktopShuffleGroup">
         <button class="btn-shuffle" id="btnShuffle">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
@@ -145,51 +166,82 @@
         </button>
       </div>
 
-      <div class="export-group">
-        <div class="download-wrapper">
-          <button class="btn-export btn-desktop" id="btnDesktopToggle">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="9" rx="1"/><path d="M5 15h6M8 12v3"/></svg>
-            Download Desktop
-            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="dropdown-icon"><path d="M3 5l3 3 3-3"/></svg>
-          </button>
-          <div class="dropdown-menu" id="desktopDropdown">
-            <button class="dropdown-item" data-resolution="4k" data-ratio="16:9">
-              <div>4K</div>
-              <div class="resolution-info">3840 × 2160</div>
-            </button>
-            <button class="dropdown-item" data-resolution="2k" data-ratio="16:9">
-              <div>2K</div>
-              <div class="resolution-info">2560 × 1440</div>
-            </button>
-            <button class="dropdown-item" data-resolution="fhd" data-ratio="16:9">
-              <div>FHD</div>
-              <div class="resolution-info">1920 × 1080</div>
-            </button>
-          </div>
+      <!-- Export popup drawer -->
+      <div class="control-group-popup" id="groupExport">
+        <div class="popup-header">
+          <span class="popup-title">Download Options</span>
+          <button class="popup-close-btn" onclick="closeAllPopups()">✕</button>
         </div>
+        <div class="export-group">
+          <div class="download-wrapper">
+            <button class="btn-export btn-desktop" id="btnDesktopToggle">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="9" rx="1"/><path d="M5 15h6M8 12v3"/></svg>
+              Download Desktop
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="dropdown-icon"><path d="M3 5l3 3 3-3"/></svg>
+            </button>
+            <div class="dropdown-menu" id="desktopDropdown">
+              <button class="dropdown-item" data-resolution="4k" data-ratio="16:9">
+                <div>4K</div>
+                <div class="resolution-info">3840 × 2160</div>
+              </button>
+              <button class="dropdown-item" data-resolution="2k" data-ratio="16:9">
+                <div>2K</div>
+                <div class="resolution-info">2560 × 1440</div>
+              </button>
+              <button class="dropdown-item" data-resolution="fhd" data-ratio="16:9">
+                <div>FHD</div>
+                <div class="resolution-info">1920 × 1080</div>
+              </button>
+            </div>
+          </div>
 
-        <div class="download-wrapper">
-          <button class="btn-export btn-mobile" id="btnMobileToggle">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="8" height="14" rx="2"/><path d="M7.5 12.5h1"/></svg>
-            Download Android
-            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="dropdown-icon"><path d="M3 5l3 3 3-3"/></svg>
-          </button>
-          <div class="dropdown-menu" id="mobileDropdown">
-            <button class="dropdown-item" data-resolution="4k" data-ratio="9:19.5">
-              <div>4K</div>
-              <div class="resolution-info">1440 × 3120</div>
+          <div class="download-wrapper">
+            <button class="btn-export btn-mobile" id="btnMobileToggle">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="1" width="8" height="14" rx="2"/><path d="M7.5 12.5h1"/></svg>
+              Download Android
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="dropdown-icon"><path d="M3 5l3 3 3-3"/></svg>
             </button>
-            <button class="dropdown-item" data-resolution="2k" data-ratio="9:19.5">
-              <div>2K</div>
-              <div class="resolution-info">1080 × 2340</div>
-            </button>
-            <button class="dropdown-item" data-resolution="fhd" data-ratio="9:19.5">
-              <div>FHD</div>
-              <div class="resolution-info">720 × 1560</div>
-            </button>
+            <div class="dropdown-menu" id="mobileDropdown">
+              <button class="dropdown-item" data-resolution="4k" data-ratio="9:19.5">
+                <div>4K</div>
+                <div class="resolution-info">1440 × 3120</div>
+              </button>
+              <button class="dropdown-item" data-resolution="2k" data-ratio="9:19.5">
+                <div>2K</div>
+                <div class="resolution-info">1080 × 2340</div>
+              </button>
+              <button class="dropdown-item" data-resolution="fhd" data-ratio="9:19.5">
+                <div>FHD</div>
+                <div class="resolution-info">720 × 1560</div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Mobile Navigation Bottom Dock Bar -->
+    <div class="mobile-dock" id="mobileDock">
+      <button class="dock-btn" onclick="toggleMobilePopup('groupPattern')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+        Pattern
+      </button>
+      <button class="dock-btn" onclick="toggleMobilePopup('groupPalette')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"/><circle cx="10.5" cy="16.5" r="1.5" fill="currentColor"/></svg>
+        Palette
+      </button>
+      <button class="dock-btn" onclick="toggleMobilePopup('groupGrading')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Grading
+      </button>
+      <button class="dock-btn" id="btnShuffleMobileDock">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Shuffle
+      </button>
+      <button class="dock-btn" onclick="toggleMobilePopup('groupExport')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Download
+      </button>
     </div>
   </div>
 </main>
@@ -207,6 +259,12 @@
       r.setProperty('--border', 'rgba(255, 255, 255, 0.08)');
       r.setProperty('--accent', '#d2c1ff');
       r.setProperty('--on-accent', '#07080c');
+      // Mobile customizer variables (Dark Mode)
+      r.setProperty('--bg-popup', 'rgba(15, 16, 26, 0.98)');
+      r.setProperty('--bg-dock', 'rgba(12, 13, 20, 0.96)');
+      r.setProperty('--border-popup', 'rgba(210, 193, 255, 0.3)');
+      r.setProperty('--bg-dock-btn', 'rgba(255, 255, 255, 0.03)');
+      r.setProperty('--box-shadow-popup', '0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.12)');
     } else {
       r.setProperty('--bg', '#f5f4fa');
       r.setProperty('--bg-card', 'rgba(255, 255, 255, 0.45)');
@@ -217,6 +275,12 @@
       r.setProperty('--border', 'rgba(0, 0, 0, 0.08)');
       r.setProperty('--accent', '#5e45a0');
       r.setProperty('--on-accent', '#ffffff');
+      // Mobile customizer variables (Light Mode)
+      r.setProperty('--bg-popup', 'rgba(245, 244, 250, 0.98)');
+      r.setProperty('--bg-dock', 'rgba(235, 234, 242, 0.96)');
+      r.setProperty('--border-popup', 'rgba(94, 69, 160, 0.25)');
+      r.setProperty('--bg-dock-btn', 'rgba(0, 0, 0, 0.04)');
+      r.setProperty('--box-shadow-popup', '0 20px 60px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.65)');
     }
   }
 
@@ -255,6 +319,48 @@
   </div>
 </div>
 
-<script type="module" src="js/create.js?v=2.4"></script>
+<script type="module" src="js/create.js?v=2.6"></script>
+<script>
+  window.toggleMobilePopup = function(id) {
+    const overlay = document.getElementById('popupOverlay');
+    const popup = document.getElementById(id);
+    if (!popup || !overlay) return;
+    const wasActive = popup.classList.contains('active');
+    
+    closeAllPopups();
+    
+    if (!wasActive) {
+      popup.classList.add('active');
+      overlay.classList.add('active');
+      
+      // Mark corresponding dock button as active
+      const dockBtns = document.querySelectorAll('.dock-btn');
+      dockBtns.forEach(btn => {
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(id)) {
+          btn.classList.add('active');
+        }
+      });
+    }
+  };
+
+  window.closeAllPopups = function() {
+    const overlay = document.getElementById('popupOverlay');
+    const popups = document.querySelectorAll('.control-group-popup');
+    const dockBtns = document.querySelectorAll('.dock-btn');
+    
+    if (overlay) overlay.classList.remove('active');
+    popups.forEach(p => p.classList.remove('active'));
+    dockBtns.forEach(b => b.classList.remove('active'));
+  };
+
+  // Bind shuffle button
+  const shuffleMobile = document.getElementById('btnShuffleMobileDock');
+  if (shuffleMobile) {
+    shuffleMobile.onclick = () => {
+      const btnShuffle = document.getElementById('btnShuffle');
+      if (btnShuffle) btnShuffle.click();
+    };
+  }
+</script>
 </body>
 </html>
