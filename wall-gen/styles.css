@@ -1455,6 +1455,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 @media (max-width: 1024px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
   /* Navigation (Static on Mobile) */
   nav {
     position: relative;
@@ -1498,7 +1505,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
   /* Main / Sections Layout */
   main {
     padding-top: 0; /* Nav is static, no top padding needed */
-    height: auto;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
   }
   .section {
     padding: 24px 16px;
@@ -1512,18 +1523,22 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
   /* Create Page Layout Overhaul for Mobile/Tablet */
   .create-layout {
-    display: block;
-    height: auto;
-    overflow: visible;
-    padding-bottom: calc(30vh + 20px); /* Space for the bottom fixed dock bar */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;
+    padding-bottom: 0;
   }
 
   .preview-area {
     position: relative;
-    min-height: 380px;
+    flex: 1;
+    min-height: 0;
     height: auto;
     width: 100%;
-    padding: 18px 16px;
+    padding: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1535,6 +1550,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   .preview-container {
     width: 100%;
     max-width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -1550,18 +1566,25 @@ input[type="range"]::-webkit-slider-thumb:hover {
     flex: 0 1 auto;
     min-width: 0;
     max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   #previewDesktop {
-    width: 100%;
-    max-width: 280px;
+    width: auto;
+    max-width: 100%;
     height: auto;
+    max-height: 80%;
   }
 
   #previewMobile {
-    width: 100%;
-    max-width: 130px;
+    width: auto;
+    max-width: 100%;
     height: auto;
+    max-height: 80%;
   }
 
   /* Hide default vertical controls panel on mobile, it acts as popup container */
@@ -1665,11 +1688,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
   /* Bottom Dock Bar - 30% Height, Vertical Flow */
   .mobile-dock {
     display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative;
     height: 30vh;
+    flex: 0 0 30vh;
     background: var(--bg-dock);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -1728,8 +1749,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 @media (max-width: 768px) {
   .preview-area {
-    min-height: 340px;
-    padding: 16px 14px;
+    min-height: 0;
+    padding: 12px;
   }
 
   .preview-container {
@@ -1738,11 +1759,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
 
   #previewDesktop {
-    max-width: 220px;
+    max-width: 100%;
+    max-height: 80%;
   }
 
   #previewMobile {
-    max-width: 110px;
+    max-width: 100%;
+    max-height: 80%;
   }
 }
 
@@ -1761,7 +1784,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
 
   #previewMobile {
-    max-width: 160px;
+    max-width: 100%;
+    max-height: 85%;
   }
   
   .controls-panel {
